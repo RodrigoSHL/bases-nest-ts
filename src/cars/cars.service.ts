@@ -17,4 +17,27 @@ export class CarsService {
         return car;
     }
 
+    createCar(name: string) {
+        this.carsArrayObject.push({id: this.carsArrayObject.length + 1, name});
+        return this.carsArrayObject;
+    }
+
+    updateCar(id: number, name: string) {
+        const car = this.carsArrayObject.find(car => car.id === id);
+        if (!car) {
+            throw new NotFoundException(`Car with id ${id} not found!`);
+        }
+        car.name = name;
+        return car;
+    }
+
+    deleteCar(id: number) {
+        const car = this.carsArrayObject.find(car => car.id === id);
+        if (!car) {
+            throw new NotFoundException(`Car with id ${id} not found!`);
+        }
+        this.carsArrayObject = this.carsArrayObject.filter(car => car.id !== id);
+        return this.carsArrayObject;
+    }
+
 }
