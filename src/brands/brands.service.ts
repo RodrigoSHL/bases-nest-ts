@@ -7,11 +7,7 @@ import { v4 as uuid } from 'uuid';
 @Injectable()
 export class BrandsService {
 
-  private brandsArrayObject: Brand[] = [
-    { id: uuid(), name: 'BMW', createdAt: 1234567890 },
-    { id: uuid(), name: 'Audi', createdAt: 1234567890 },
-    { id: uuid(), name: 'Mercedes', createdAt: 1234567890 }
-  ]
+  private brandsArrayObject: Brand[] = []
 
   create(createBrandDto: CreateBrandDto) {
     const brand = { id: uuid(), ...createBrandDto, createdAt: new Date().getTime() };
@@ -31,11 +27,23 @@ export class BrandsService {
     return brand;
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  update(id: string, updateBrandDto: UpdateBrandDto) {
+    let brandDB = this.findOne(id);
+    this.brandsArrayObject = this.brandsArrayObject.map(brand => {
+      if (brand.id === id) {
+        brandDB.updatedAt = new Date().getTime();
+        brandDB = { ...brand, ...updateBrandDto };
+        return brandDB;
+      }
+      return brand;
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  remove(id: string ) {
+    this.brandsArrayObject = this.brandsArrayObject.filter( brand => brand.id !== id );
+  }
+
+  fillBrandsWithSeedData( brands: Brand[] ) {
+    this.brandsArrayObject = brands;
   }
 }
